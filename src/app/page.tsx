@@ -5,7 +5,17 @@ import Image from 'next/image';
 import { Container, Grid, Card, CardMedia, CardContent, Typography, Button, Box, AppBar, Toolbar, IconButton, Badge, Popover } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
-const products = [
+// Interface สำหรับ Product
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  quantity?: number; // quantity is optional since it might not be set initially
+}
+
+// รายการสินค้าที่แสดง
+const products: Product[] = [
   { id: 1, name: 'iPhone 15 Pro', price: 42900, image: '/images/iphone15.webp' },
   { id: 2, name: 'iPhone 15', price: 32900, image: '/images/iphone15.webp' },
   { id: 3, name: 'iPad Pro', price: 32900, image: '/images/ipadpro.webp' },
@@ -14,7 +24,7 @@ const products = [
 ];
 
 const Home = () => {
-  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [cartItems, setCartItems] = useState<Product[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleCartClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -27,12 +37,12 @@ const Home = () => {
 
   const open = Boolean(anchorEl);
   
-  const addToCart = (product: any) => {
+  const addToCart = (product: Product) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === product.id);
       if (existingItem) {
         return prevItems.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.id === product.id ? { ...item, quantity: (item.quantity ?? 0) + 1 } : item
         );
       } else {
         return [...prevItems, { ...product, quantity: 1 }];
@@ -47,7 +57,7 @@ const Home = () => {
   const incrementQuantity = (id: number) => {
     setCartItems((prevItems) =>
       prevItems.map(item =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+        item.id === id ? { ...item, quantity: (item.quantity ?? 0) + 1 } : item
       )
     );
   };
@@ -55,7 +65,7 @@ const Home = () => {
   const decrementQuantity = (id: number) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find(item => item.id === id);
-      if (existingItem && existingItem.quantity > 1) {
+      if (existingItem && existingItem.quantity && existingItem.quantity > 1) {
         return prevItems.map(item =>
           item.id === id ? { ...item, quantity: item.quantity - 1 } : item
         );
@@ -73,7 +83,7 @@ const Home = () => {
             Apple Store
           </Typography>
           <IconButton color="inherit" onClick={handleCartClick}>
-            <Badge badgeContent={cartItems.reduce((total, item) => total + item.quantity, 0)} color="secondary">
+            <Badge badgeContent={cartItems.reduce((total, item) => total + (item.quantity ?? 0), 0)} color="secondary">
               <ShoppingCartIcon />
             </Badge>
           </IconButton>
@@ -134,9 +144,9 @@ const Home = () => {
                   <Box style={{ flexGrow: 1 }}>
                     <Typography variant="h6">{item.name}</Typography>
                     <Typography>
-                      {item.price.toLocaleString()} บาท x {item.quantity}
+                      {item.price.toLocaleString()} บาท x {item.quantity ?? 0}
                     </Typography>
-                    <Typography>Total: {(item.price * item.quantity).toLocaleString()} บาท</Typography>
+                    <Typography>Total: {(item.price * (item.quantity ?? 0)).toLocaleString()} บาท</Typography>
                   </Box>
                   <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Box>
@@ -165,7 +175,7 @@ const Home = () => {
                   </Box>
                 </Box>
               ))}
-              <Typography variant="h6">Total Price: {cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toLocaleString()} บาท</Typography>
+              <Typography variant="h6">Total Price: {cartItems.reduce((total, item) => total + item.price * (item.quantity ?? 0), 0).toLocaleString()} บาท</Typography>
             </Box>
           )}
         </Box>
