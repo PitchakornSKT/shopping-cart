@@ -18,7 +18,7 @@ const products: Product[] = [
   { id: 2, name: 'iPhone 15', price: 32900, image: '/images/iphone15.webp' },
   { id: 3, name: 'iPad Pro', price: 32900, image: '/images/ipadpro.webp' },
   { id: 4, name: 'iPad Air', price: 20900, image: '/images/ipadair.webp' },
-  { id: 5, name: 'MacBook Pro', price: 73900, image: '/images/macbookpro.jfif' }
+  { id: 5, name: 'MacBook Pro', price: 73900, image: '/images/macbookpro.webp' }
 ];
 
 const Home = () => {
@@ -185,10 +185,10 @@ const Home = () => {
       </Popover>
 
       {/* Footer */}
-      <Box mt={4} py={2} textAlign="center" style={{ backgroundColor: '#fff', color: '#000', borderTop: '1px solid #ddd' }}>
+      <Box mt={4} py={2} textAlign="center" style={{ backgroundColor: '#000', color: '#fff', borderTop: '1px solid #ddd' }}>
         <Typography variant="body2">
           Developer นายพิชชากร สกุลไทย | รหัสนักศึกษา 653450095-6 | 
-          Email: <a href="mailto:pitchakorn.sa@kkumail.com" style={{ color: '#000', textDecoration: 'underline' }}>pitchakorn.sa@kkumail.com</a>
+          Email: <a href="mailto:pitchakorn.sa@kkumail.com" style={{ color: '#fff', textDecoration: 'underline' }}>pitchakorn.sa@kkumail.com</a>
         </Typography>
       </Box>
 
