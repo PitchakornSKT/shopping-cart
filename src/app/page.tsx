@@ -5,16 +5,14 @@ import Image from 'next/image';
 import { Container, Grid, Card, CardMedia, CardContent, Typography, Button, Box, AppBar, Toolbar, IconButton, Badge, Popover } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
-// Interface สำหรับ Product
 interface Product {
   id: number;
   name: string;
   price: number;
   image: string;
-  quantity?: number; // quantity is optional since it might not be set initially
+  quantity?: number; 
 }
 
-// รายการสินค้าที่แสดง
 const products: Product[] = [
   { id: 1, name: 'iPhone 15 Pro', price: 42900, image: '/images/iphone15.webp' },
   { id: 2, name: 'iPhone 15', price: 32900, image: '/images/iphone15.webp' },
@@ -41,11 +39,12 @@ const Home = () => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === product.id);
       if (existingItem) {
+        // ใช้ quantity ปัจจุบันหรือ 0 ถ้าไม่มี
         return prevItems.map((item) =>
           item.id === product.id ? { ...item, quantity: (item.quantity ?? 0) + 1 } : item
         );
       } else {
-        return [...prevItems, { ...product, quantity: 1 }];
+        return [...prevItems, { ...product, quantity: 1 }]; // ตั้งค่าเริ่มต้น quantity เป็น 1
       }
     });
   };
@@ -64,16 +63,20 @@ const Home = () => {
 
   const decrementQuantity = (id: number) => {
     setCartItems((prevItems) => {
-      const existingItem = prevItems.find(item => item.id === id);
-      if (existingItem && existingItem.quantity && existingItem.quantity > 1) {
-        return prevItems.map(item =>
-          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
-        );
-      } else {
-        return prevItems.filter(item => item.id !== id);
-      }
+      return prevItems.map(item => {
+        const currentQuantity = item.quantity ?? 0;
+        if (item.id === id) {
+          if (currentQuantity > 1) {
+            return { ...item, quantity: currentQuantity - 1 }; 
+          } else {
+            return null; 
+          }
+        }
+        return item;
+      }).filter(item => item !== null); 
     });
   };
+  
 
   return (
     <Container maxWidth="lg">
@@ -144,9 +147,9 @@ const Home = () => {
                   <Box style={{ flexGrow: 1 }}>
                     <Typography variant="h6">{item.name}</Typography>
                     <Typography>
-                      {item.price.toLocaleString()} บาท x {item.quantity ?? 0}
+                      {item.price.toLocaleString()} บาท x {(item.quantity ?? 1)}
                     </Typography>
-                    <Typography>Total: {(item.price * (item.quantity ?? 0)).toLocaleString()} บาท</Typography>
+                    <Typography>Total: {(item.price * (item.quantity ?? 1)).toLocaleString()} บาท</Typography>
                   </Box>
                   <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Box>
@@ -175,7 +178,7 @@ const Home = () => {
                   </Box>
                 </Box>
               ))}
-              <Typography variant="h6">Total Price: {cartItems.reduce((total, item) => total + item.price * (item.quantity ?? 0), 0).toLocaleString()} บาท</Typography>
+              <Typography variant="h6">Total Price: {cartItems.reduce((total, item) => total + (item.price * (item.quantity ?? 1)), 0).toLocaleString()} บาท</Typography>
             </Box>
           )}
         </Box>
